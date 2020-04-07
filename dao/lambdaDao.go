@@ -25,11 +25,32 @@ func (d *Lambda) GetByUser(userID int) ([]models.Lambda,error){
 		return nil, err
 	}
 
-	err = session.GetCollection("labda_data").Find(bson.M{"userid": userID}).All(&results)
+	err = session.GetCollection("lambda_data").Find(bson.M{"userid": userID}).All(&results)
 
 	if err != nil{
 		err = xerrors.Errorf("Get by user error -> %v",err)
 	}
 
 	return results,err
+}
+
+func (d *Lambda) GetById(id string) (models.Lambda, error) {
+	var results []models.Lambda
+	session, err := mongo.NewSession()
+	if err != nil {
+		err = xerrors.Errorf("Unable to connect to mongo: %v",err)
+		return models.Lambda{}, err
+	}
+
+	err = session.GetCollection("lambda_data").Find(bson.M{"generic.id":id}).All(&results)
+
+	if err != nil{
+		err = xerrors.Errorf("Get by user error -> %v",err)
+		return models.Lambda{} , err
+	}
+
+	if len(results) >0 {
+		return results[0],nil
+	}
+	return models.Lambda{}, nil
 }

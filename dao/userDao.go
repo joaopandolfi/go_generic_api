@@ -57,7 +57,7 @@ func (cc User) CheckToken(user models.User) (result models.User, success bool, e
 		return
 	}
 
-	utils.Debug("Check Token result [id,token,result]",user.ID,user.Token,results)
+	//utils.Debug("Check Token result [id,token,result]",user.ID,user.Token,results)
 	if len(results) > 0{
 		success = true
 		result = results[0]

@@ -64,7 +64,19 @@ func (cc LambdaController) SaveWithTag(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-func (cc LambdaController) Foward(w http.ResponseWriter, r *http.Request) {
+func (cc LambdaController) GetByID(w http.ResponseWriter, r *http.Request) {
+	vars:=handlers.GetVars(r)
+	dao:= dao.Lambda{}
+	result,err := dao.GetById(vars["id"])
+	if err != nil{
+		utils.Error("[LambdaController][GetById] - Erron on save", err.Error())
+		handlers.RESTResponseError(w,"Internal error")
+		return
+	}
+	handlers.Response(w,result)
+}
+
+func (cc LambdaController) Forward(w http.ResponseWriter, r *http.Request) {
 	var received map[string]string
 	form, err := handlers.GetForm(r)
 	err = handlers.DecodeForm(&received, form)
