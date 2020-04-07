@@ -36,6 +36,7 @@ func (cc UserController) NewClientUser(w http.ResponseWriter, r *http.Request) {
 
 	result, err := userService.NewUserClient(user)
 	if err != nil {
+		utils.Debug("Error on create new user",err.Error())
 		handlers.RESTResponseError(w, "Error on create new user")
 	} else {
 		handlers.RESTResponse(w, result)
