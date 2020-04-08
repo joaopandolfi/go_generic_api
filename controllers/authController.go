@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/segmentio/encoding/json"
 	"net/http"
 
 "../models"
@@ -41,7 +42,8 @@ func (cc AuthController) LoginPage(w http.ResponseWriter, r *http.Request) {
 func (cc AuthController) Login(w http.ResponseWriter, r *http.Request) {
 	var userService = NewUserService()
 	var sess, _ = handlers.GetSession(r)
-	form, err := handlers.GetForm(r)
+	var received map[string]string
+	err := json.NewDecoder(r.Body).Decode(&received)
 
 	var msg string
 	var result map[string]interface{}
@@ -52,9 +54,9 @@ func (cc AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(form["username"]) == 1 || len(form["password"]) == 1 {
+	if received["username"] != "" && received["password"] != "" {
 
-		user, success, err := userService.Login(form["username"][0], form["password"][0])
+		user, success, err := userService.Login(received["username"], received["password"])
 		//( == "joao" &&  == "202cb962ac59075b964b07152d234b70")
 		if success {
 			sess.Values[models.SESSION_VALUE_LOGGED] = true
@@ -81,6 +83,7 @@ func (cc AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		}
 		msg = "Invalid credentials"
 	} else {
+		utils.Error("Wrong parameters ->",received)
 		msg = "Wrong parameters"
 	}
 

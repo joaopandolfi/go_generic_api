@@ -54,9 +54,12 @@ func main() {
 		ReadTimeout:  configurations.Configuration.Timeout.Read,
 	}
 
-	err := srv.ListenAndServe() //srv.ListenAndServeTLS()
-	//"github.com/fvbock/endless"
-	///err := endless.ListenAndServeTLS("localhost:4242", "cert.pem", "key.pem", r)
+	var err error
+	if config.Config.Debug{
+		err = srv.ListenAndServe()
+	} else{
+		err = srv.ListenAndServeTLS(config.Config.TLSCert,config.Config.TLSKey)
+	}
 
 	if err != nil {
 		utils.CriticalError("Fatal server error", err.Error())

@@ -12,13 +12,21 @@ import (
 
 type Configs struct {
 	Token string
+	Debug bool
+	TLSCert string
+	TLSKey string
 }
 
 var Config Configs
 
 func Load() configurations.Configurations {
 
-	Config.Token = "$238#!%s@233**#sd*"
+	Config = Configs{
+		Token:   "$238#!%s@233**#sd*",
+		Debug:   true,
+		TLSCert: "",
+		TLSKey:  "",
+	}
 
 	return configurations.Configurations{
 		Name: "GENERIC API - GO",
@@ -41,10 +49,6 @@ func Load() configurations.Configurations {
 			Read:  60 * time.Second,
 		},
 
-
-		StaticDir:      "./views/public/",
-		StaticPagesDir: "./views/pages/",
-		UploadPath:     "./views/upload/",
 
 		MaxSizeMbUpload: 10 << 55, // min << max
 
