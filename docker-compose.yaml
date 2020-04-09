@@ -4,4 +4,4 @@ services:
     container_name: gen.mongo
     image: mongo:3.6
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"

@@ -1,18 +1,19 @@
 package main
 
 import (
-	"./routes"
-	"net/http"
 	"./config"
+	"./routes"
 	"github.com/gorilla/mux"
 	"github.com/joaopandolfi/blackwhale/configurations"
+	"net/http"
+	"os"
 
 	"github.com/joaopandolfi/blackwhale/remotes/mysql"
 	"github.com/joaopandolfi/blackwhale/utils"
 )
 
 func configInit() {
-	configurations.LoadConfig(config.Load())
+	configurations.LoadConfig(config.Load(os.Args[1:]))
 	mysql.Init()
 	// Precompile html pages
 	routes.Precompile()

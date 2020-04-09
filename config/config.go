@@ -19,13 +19,21 @@ type Configs struct {
 
 var Config Configs
 
-func Load() configurations.Configurations {
+func Load(args []string) configurations.Configurations {
 
 	Config = Configs{
 		Token:   "$238#!%s@233**#sd*",
 		Debug:   true,
 		TLSCert: "",
 		TLSKey:  "",
+	}
+
+	if len(args) == 3 {
+		if args[0] == "ssl" {
+			Config.Debug = false
+			Config.TLSCert = args[1]
+			Config.TLSKey = args[2]
+		}
 	}
 
 	return configurations.Configurations{
