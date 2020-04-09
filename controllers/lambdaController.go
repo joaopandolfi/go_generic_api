@@ -29,12 +29,12 @@ func (cc LambdaController) Save(w http.ResponseWriter, r *http.Request){
 
 
 	dao := dao.Lambda{}
-	err = dao.Save(models.Lambda{UserID:userID, Generic:received})
+	id,err := dao.Save(models.Lambda{ UserID:userID, Generic:received})
 
 	if err != nil{
 		handlers.RESTResponseError(w,false)
 	}else{
-		handlers.RESTResponse(w,true)
+		handlers.RESTResponse(w,id)
 	}
 }
 

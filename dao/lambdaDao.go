@@ -8,13 +8,15 @@ import (
 )
 
 type LambdaDAO interface {
-	Save(models.Lambda)
+	Save(models.Lambda)(string,error)
 }
 
 type Lambda struct {}
 
-func (d *Lambda) Save(lambda models.Lambda) error{
-	return mongo.GenericInsert("lambda_data",lambda)
+func (d *Lambda) Save(lambda models.Lambda) (string,error){
+	lambda.ID = bson.NewObjectId()
+	err := mongo.GenericInsert("lambda_data",lambda)
+	return lambda.ID.String(),err
 }
 
 func (d *Lambda) GetByUser(userID int) ([]models.Lambda,error){
