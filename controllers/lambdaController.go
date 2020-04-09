@@ -55,12 +55,12 @@ func (cc LambdaController) SaveWithTag(w http.ResponseWriter, r *http.Request){
 
 
 	dao := dao.Lambda{}
-	err = dao.Save(models.Lambda{UserID:userID, Generic:received, Tag:received["tag"].(string)})
+	id,err := dao.Save(models.Lambda{UserID:userID, Generic:received, Tag:received["tag"].(string)})
 
 	if err != nil{
 		handlers.RESTResponseError(w,false)
 	}else{
-		handlers.RESTResponse(w,true)
+		handlers.RESTResponse(w,id)
 	}
 }
 
