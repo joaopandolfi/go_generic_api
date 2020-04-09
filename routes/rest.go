@@ -17,7 +17,8 @@ func rest(r *mux.Router) {
 	r.HandleFunc("/rest/user/new/t", controllers.UserController{}.NewClientUser).Methods("POST")
 
 	//Generic
-	r.HandleFunc("/lambda/new",mhandlers.AuthTokenedProtection(controllers.LambdaController{}.Save)).Methods("POST")
+	//r.HandleFunc("/lambda/new",mhandlers.AuthTokenedProtection(controllers.LambdaController{}.Save)).Methods("POST")
+	r.HandleFunc("/lambda/new",controllers.LambdaController{}.Save).Methods("POST")
 	r.HandleFunc("/lambda/tag/new",mhandlers.AuthTokenedProtection(controllers.LambdaController{}.SaveWithTag)).Methods("POST")
 	r.HandleFunc("/lambda/get/{id}",mhandlers.AuthTokenedProtection(controllers.LambdaController{}.GetByID)).Methods("GET")
 
