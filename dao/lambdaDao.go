@@ -16,7 +16,7 @@ type Lambda struct {}
 func (d *Lambda) Save(lambda models.Lambda) (string,error){
 	lambda.ID = bson.NewObjectId()
 	err := mongo.GenericInsert("lambda_data",lambda)
-	return lambda.ID.String(),err
+	return lambda.ID.Hex(),err
 }
 
 func (d *Lambda) GetByUser(userID int) ([]models.Lambda,error){
