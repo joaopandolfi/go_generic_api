@@ -16,7 +16,7 @@ type LambdaController struct {
 }
 
 func (cc LambdaController) Save(w http.ResponseWriter, r *http.Request){
-	var received interface{}
+	var received map[string]interface{}
 	err := json.NewDecoder(r.Body).Decode(&received)
 	if err != nil {
 		utils.Error("[LambdaController][Save] - Erron on get body", err.Error())
@@ -29,7 +29,9 @@ func (cc LambdaController) Save(w http.ResponseWriter, r *http.Request){
 
 
 	dao := dao.Lambda{}
-	id,err := dao.Save(models.Lambda{ UserID:userID, Generic:received})
+	id := dao.GenerateID()
+	received["id"] = id;
+	err = dao.Save(models.Lambda{ UserID:userID, Generic:received})
 
 	if err != nil{
 		handlers.RESTResponseError(w,false)
@@ -55,7 +57,9 @@ func (cc LambdaController) SaveWithTag(w http.ResponseWriter, r *http.Request){
 
 
 	dao := dao.Lambda{}
-	id,err := dao.Save(models.Lambda{UserID:userID, Generic:received, Tag:received["tag"].(string)})
+	id := dao.GenerateID()
+	received["id"] = id;
+	err = dao.Save(models.Lambda{UserID:userID, Generic:received, Tag:received["tag"].(string)})
 
 	if err != nil{
 		handlers.RESTResponseError(w,false)
