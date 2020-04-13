@@ -2,24 +2,25 @@ package services
 
 import (
 	"fmt"
-	"github.com/joaopandolfi/blackwhale/utils"
+
+	"../config"
 	"../dao"
 	"../models"
-	"../config"
+	"github.com/joaopandolfi/blackwhale/utils"
 )
 
 type UserService interface {
 	Login(username string, password string) (user models.User, success bool, err error)
 	NewUserClient(user models.User) (result models.User, err error)
-	CheckToken(userid int,token string) (success bool, err error)
+	CheckToken(userid int, token string) (success bool, err error)
 }
 
 type User struct {
 	UserDAO dao.UserDAO
 }
 
-func (cc User) CheckToken(userid int,token string) (success bool, err error) {
-	_,success,err = cc.UserDAO.CheckToken(models.User{Token: token,ID: userid})
+func (cc User) CheckToken(userid int, token string) (success bool, err error) {
+	_, success, err = cc.UserDAO.CheckToken(models.User{Token: token, ID: userid})
 	return
 }
 
@@ -31,7 +32,7 @@ func (cc User) Login(username string, password string) (user models.User, succes
 func (cc User) NewUserClient(user models.User) (result models.User, err error) {
 	user.Level = models.USER_CLIENT
 	user.Password, err = utils.HashPassword(user.Password)
-	user.Token = fmt.Sprintf(config.Config.Token,user.Password[0:15])
+	user.Token, err = utils.HashPassword(fmt.Sprintf(config.Config.Token, user.Username))
 
 	if err != nil {
 		user.Password = ""
