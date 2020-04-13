@@ -11,10 +11,10 @@ import (
 )
 
 type Configs struct {
-	Token string
-	Debug bool
+	Token   string
+	Debug   bool
 	TLSCert string
-	TLSKey string
+	TLSKey  string
 }
 
 var Config Configs
@@ -46,22 +46,21 @@ func Load(args []string) configurations.Configurations {
 			"3307",      // port
 			"miia"),     // Database
 
-		MongoUrl: "mongodb://127.0.0.1:27017",
-		MongoDb:  "gen-api",
+		MongoUrl:  "mongodb://127.0.0.1:27017",
+		MongoDb:   "gen-api",
+		MongoPool: 5,
 
-		Port:        ":8990",
-		CORS:        "*",
+		Port: ":8990",
+		CORS: "*",
 
 		Timeout: configurations.Timeout{
 			Write: 60 * time.Second,
 			Read:  60 * time.Second,
 		},
 
-
 		MaxSizeMbUpload: 10 << 55, // min << max
 
 		BCryptSecret: "#1$eY)&4430",
-
 
 		// Session
 		Session: configurations.SessionConfiguration{
@@ -81,6 +80,7 @@ func Load(args []string) configurations.Configurations {
 				SSLHost:            "locahost:443",
 				SSLRedirect:        false,
 			},
+			BCryptCost: 10,
 		},
 
 		Templates: make(map[string]*pongo2.Template),
@@ -89,6 +89,5 @@ func Load(args []string) configurations.Configurations {
 		SlackToken:   "",
 		SlackWebHook: []string{"", ""},
 		SlackChannel: "",
-
 	}
 }
