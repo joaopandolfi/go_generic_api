@@ -12,6 +12,7 @@ import (
 type UserService interface {
 	Login(username string, password string) (user models.User, success bool, err error)
 	NewUserClient(user models.User) (result models.User, err error)
+	NewUser(user models.User) (result models.User, err error)
 	CheckToken(userid int, token string) (success bool, err error)
 }
 
@@ -31,6 +32,11 @@ func (cc User) Login(username string, password string) (user models.User, succes
 // New basic client user
 func (cc User) NewUserClient(user models.User) (result models.User, err error) {
 	user.Level = models.USER_CLIENT
+	return cc.NewUser(user)
+}
+
+// NewUser Generic
+func (cc User) NewUser(user models.User) (result models.User, err error) {
 	user.Password, err = utils.HashPassword(user.Password)
 	user.Token, err = utils.HashPassword(fmt.Sprintf(config.Config.Token, user.Username))
 

@@ -1,15 +1,16 @@
 package controllers
 
 import (
-	"github.com/segmentio/encoding/json"
 	"net/http"
 
-"../models"
+	"github.com/segmentio/encoding/json"
 
-"github.com/flosch/pongo2"
-"github.com/joaopandolfi/blackwhale/configurations"
-"github.com/joaopandolfi/blackwhale/handlers"
-"github.com/joaopandolfi/blackwhale/utils"
+	"../models"
+
+	"github.com/flosch/pongo2"
+	"github.com/joaopandolfi/blackwhale/configurations"
+	"github.com/joaopandolfi/blackwhale/handlers"
+	"github.com/joaopandolfi/blackwhale/utils"
 )
 
 // AuthController -
@@ -77,13 +78,14 @@ func (cc AuthController) Login(w http.ResponseWriter, r *http.Request) {
 			result["token"] = user.Token
 			result["institution"] = user.Instution
 			result["id"] = user.ID
+			result["permission"] = user.Level
 
 			handlers.Response(w, result)
 			return
 		}
 		msg = "Invalid credentials"
 	} else {
-		utils.Error("Wrong parameters ->",received)
+		utils.Error("Wrong parameters ->", received)
 		msg = "Wrong parameters"
 	}
 

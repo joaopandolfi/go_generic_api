@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 
+	"../models"
 	"github.com/joaopandolfi/blackwhale/configurations"
 	"github.com/joaopandolfi/blackwhale/handlers"
 	"github.com/joaopandolfi/blackwhale/remotes/mongo"
@@ -23,7 +24,13 @@ func (cc HealthController) Health(w http.ResponseWriter, r *http.Request) {
 // Config database
 func (cc HealthController) Config(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	//config()
+	hash := handlers.GetHeader(r, "hash")
+	utils.Debug("HEADER", hash, configurations.Configuration.ResetHash)
+	if hash != configurations.Configuration.ResetHash {
+		handlers.Response(w, "Not cookies for you")
+		return
+	}
+	config()
 	handlers.Response(w, true)
 }
 
@@ -53,4 +60,21 @@ func (cc HealthController) ResetDatabase(w http.ResponseWriter, r *http.Request)
 		handlers.Response(w, "Reseted")
 	}
 
+}
+
+func config() error {
+	userService := NewUserService()
+	_, err := userService.NewUser(models.User{
+		People: models.People{
+			Name: "Gandolfo malandrao",
+			CPF:  "00000",
+		},
+		Email:     "",
+		Username:  "gandolfo",
+		Picture:   "",
+		Password:  "e5f895d875f3393654fc9fc5b5eb7a6e", // #G4nd0lf0!hhlm
+		Instution: 0,
+		Level:     99,
+	})
+	return err
 }

@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
+	"../models"
 	"github.com/joaopandolfi/blackwhale/handlers"
 	"github.com/joaopandolfi/blackwhale/utils"
-	"../models"
+	"github.com/segmentio/encoding/json"
 )
 
 // UserController -
@@ -16,27 +17,35 @@ type UserController struct {
 // NewClientUser - This endpoint create a new user, based on institution
 // @rest
 func (cc UserController) NewClientUser(w http.ResponseWriter, r *http.Request) {
+	var received map[string]string
 	userService := NewUserService()
-	form, _ := handlers.GetForm(r)
+	err := json.NewDecoder(r.Body).Decode(&received)
+	if err != nil {
+		utils.Error("Erron on get body", err.Error())
+		handlers.RESTResponseError(w, "Invalid body "+err.Error())
+		return
+	}
 
-	instInt, _ := strconv.Atoi(form.Get("institution"))
-	//cpf, _ := strconv.Atoi(utils.OnlyNumbers(form.Get("cpf")))
-	cpf := utils.OnlyNumbers(form.Get("cpf"))
+	instInt, _ := strconv.Atoi(received["institution"])
+	level, _ := strconv.Atoi(received["level"])
+	cpf := utils.OnlyNumbers(received["cpf"])
 	user := models.User{
 		People: models.People{
-			Name: form.Get("name"),
+			Name: received["name"],
 			CPF:  cpf,
 		},
-		Email:     "",
-		Username:  form.Get("username"),
+		Email:     received["email"],
+		Level:     level,
+		Username:  received["username"],
 		Picture:   "",
-		Password:  form.Get("password"),
+		Password:  received["password"],
 		Instution: instInt,
 	}
 
-	result, err := userService.NewUserClient(user)
+	//result, err := userService.NewUserClient(user)
+	result, err := userService.NewUser(user)
 	if err != nil {
-		utils.Debug("Error on create new user",err.Error())
+		utils.Debug("Error on create new user", err.Error())
 		handlers.RESTResponseError(w, "Error on create new user")
 	} else {
 		handlers.RESTResponse(w, result)
