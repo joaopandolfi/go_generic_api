@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/segmentio/encoding/json"
@@ -59,14 +60,20 @@ func (cc AuthController) Login(w http.ResponseWriter, r *http.Request) {
 
 		user, success, err := userService.Login(received["username"], received["password"])
 		//( == "joao" &&  == "202cb962ac59075b964b07152d234b70")
-		if success {
+		if success && err != nil {
+
+			token, err := utils.NewJwtToken(fmt.Sprint(user.ID), configurations.Configuration.Security.TokenValidity)
+
+			if err != nil {
+				token = user.Token
+			}
 			sess.Values[models.SESSION_VALUE_LOGGED] = true
 			sess.Values[models.SESSION_VALUE_SPECIALTY] = 1 // Default - oftalmo
 			sess.Values[models.SESSION_VALUE_USERNAME] = user.Username
 			sess.Values[models.SESSION_VALUE_NAME] = user.Name
 			sess.Values[models.SESSION_VALUE_INSTITUTION] = user.Instution
 			sess.Values[models.SESSION_VALUE_LEVEL] = user.Level
-			sess.Values[models.SESSION_VALUE_TOKEN] = user.Token
+			sess.Values[models.SESSION_VALUE_TOKEN] = token
 			sess.Values[models.SESSION_VALUE_ID] = user.ID
 			sess.Options = configurations.Configuration.Session.Options
 			err = sess.Save(r, w)
@@ -75,7 +82,7 @@ func (cc AuthController) Login(w http.ResponseWriter, r *http.Request) {
 			result = make(map[string]interface{})
 
 			result["success"] = true
-			result["token"] = user.Token
+			result["token"] = token
 			result["institution"] = user.Instution
 			result["id"] = user.ID
 			result["permission"] = user.Level

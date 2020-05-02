@@ -1,16 +1,15 @@
 package mhandlers
 
 import (
-"fmt"
-"net/http"
-	"strconv"
+	"fmt"
+	"net/http"
 
+	"../dao"
+	"../models"
+	"../services"
 	"github.com/joaopandolfi/blackwhale/configurations"
-"github.com/joaopandolfi/blackwhale/handlers"
-"github.com/joaopandolfi/blackwhale/utils"
-"../dao"
-"../models"
-"../services"
+	"github.com/joaopandolfi/blackwhale/handlers"
+	"github.com/joaopandolfi/blackwhale/utils"
 )
 
 var uservice = services.User{
@@ -35,12 +34,11 @@ func TokenHandler(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		token := handlers.GetHeader(r, "token")
-		userIDs := handlers.GetHeader(r, "id")
-		userID,_ := strconv.Atoi(userIDs)
+		userID := handlers.GetHeader(r, "id")
 
-		s, err := uservice.CheckToken(userID,token)
+		t, err := utils.CheckJwtToken(token)
 
-		if !s || err != nil {
+		if !t.Authorized || err != nil || t.ID != userID {
 			utils.Debug("[TokenHandler]", "Auth Error", url)
 			handlers.Redirect(r, w, "/login")
 			return
@@ -128,7 +126,6 @@ func AuthProtection(f http.HandlerFunc) http.HandlerFunc {
 func AuthTokenedProtection(f http.HandlerFunc) http.HandlerFunc {
 	return handlers.Chain(f, TokenHandler)
 }
-
 
 // BlockForClients - Deny acess to `users` level
 // @middleware
