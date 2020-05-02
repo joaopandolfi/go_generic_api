@@ -1,9 +1,11 @@
 package dao
 
 import (
+	"fmt"
+
+	"../models"
 	"github.com/joaopandolfi/blackwhale/remotes/mongo"
 	"github.com/joaopandolfi/blackwhale/utils"
-	"../models"
 	"golang.org/x/xerrors"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -11,7 +13,7 @@ import (
 // Dao responsável por gerir os usários
 
 type UserDAO interface {
-	NewUser(user models.User) (result models.User,err error)
+	NewUser(user models.User) (result models.User, err error)
 	Login(user models.User) (result models.User, success bool, err error)
 	CheckToken(user models.User) (result models.User, success bool, err error)
 }
@@ -25,18 +27,23 @@ func (cc User) NewUser(user models.User) (result models.User, err error) {
 	//Arrange
 	session, err := mongo.NewSession()
 	if err != nil {
-		err = xerrors.Errorf("Unable to connect to mongo: %v",err)
+		err = xerrors.Errorf("Unable to connect to mongo: %v", err)
 		//utils.CriticalError("Unable to connect to mongo:", err.Error())
 		return
 	}
 	id := mongo.GetNextID("user_id")
 	user.ID = id
+	user.Token, err = utils.NewJwtToken(utils.Token{
+		ID:          fmt.Sprint(user.ID),
+		Institution: fmt.Sprint(user.Instution),
+		Permission:  fmt.Sprint(user.Level),
+	}, 60)
 
 	result = user
 
-	err  = session.GetCollection("user").Insert(&user)
-	if err != nil{
-		err = xerrors.Errorf("Insert user error %v",err)
+	err = session.GetCollection("user").Insert(&user)
+	if err != nil {
+		err = xerrors.Errorf("Insert user error %v", err)
 	}
 	return
 }
@@ -47,18 +54,18 @@ func (cc User) CheckToken(user models.User) (result models.User, success bool, e
 	session, err := mongo.NewSession()
 
 	if err != nil {
-		err = xerrors.Errorf("Unable to connect to mongo: %v",err)
+		err = xerrors.Errorf("Unable to connect to mongo: %v", err)
 		return
 	}
 
 	err = session.GetCollection("user").Find(bson.M{"id": user.ID, "token": user.Token}).All(&results)
-	if err != nil{
-		err = xerrors.Errorf("query user error %v",err)
+	if err != nil {
+		err = xerrors.Errorf("query user error %v", err)
 		return
 	}
 
 	//utils.Debug("Check Token result [id,token,result]",user.ID,user.Token,results)
-	if len(results) > 0{
+	if len(results) > 0 {
 		success = true
 		result = results[0]
 	}
@@ -71,13 +78,13 @@ func (cc User) Login(user models.User) (result models.User, success bool, err er
 	var users []models.User
 	session, err := mongo.NewSession()
 	if err != nil {
-		err = xerrors.Errorf("Unable to connect to mongo: %v",err)
+		err = xerrors.Errorf("Unable to connect to mongo: %v", err)
 		return
 	}
 
 	err = session.GetCollection("user").Find(bson.M{"username": user.Username}).All(&users)
-	if err != nil{
-		err = xerrors.Errorf("query user error %v",err)
+	if err != nil {
+		err = xerrors.Errorf("query user error %v", err)
 		return
 	}
 

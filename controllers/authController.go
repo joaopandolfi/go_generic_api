@@ -62,7 +62,11 @@ func (cc AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		//( == "joao" &&  == "202cb962ac59075b964b07152d234b70")
 		if success && err != nil {
 
-			token, err := utils.NewJwtToken(fmt.Sprint(user.ID), configurations.Configuration.Security.TokenValidity)
+			token, err := utils.NewJwtToken(utils.Token{
+				ID:          fmt.Sprint(user.ID),
+				Institution: fmt.Sprint(user.Instution),
+				Permission:  fmt.Sprint(user.Level),
+			}, configurations.Configuration.Security.TokenValidity)
 
 			if err != nil {
 				token = user.Token
