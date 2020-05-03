@@ -55,12 +55,11 @@ func (cc AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		handlers.ResponseError(w, "Error on unmarshal body")
 		return
 	}
+	if received["username"] != "" && received["password"] != "" && received["institution"] != "" {
 
-	if received["username"] != "" && received["password"] != "" {
-
-		user, success, err := userService.Login(received["username"], received["password"])
+		user, success, err := userService.Login(received["username"], received["password"], received["institution"])
 		//( == "joao" &&  == "202cb962ac59075b964b07152d234b70")
-		if success && err != nil {
+		if success && err == nil {
 
 			token, err := utils.NewJwtToken(utils.Token{
 				ID:          fmt.Sprint(user.ID),

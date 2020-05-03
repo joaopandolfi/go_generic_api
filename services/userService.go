@@ -1,13 +1,15 @@
 package services
 
 import (
+	"strconv"
+
 	"../dao"
 	"../models"
 	"github.com/joaopandolfi/blackwhale/utils"
 )
 
 type UserService interface {
-	Login(username string, password string) (user models.User, success bool, err error)
+	Login(username string, password string, institution string) (user models.User, success bool, err error)
 	NewUserClient(user models.User) (result models.User, err error)
 	NewUser(user models.User) (result models.User, err error)
 	CheckToken(userid int, token string) (success bool, err error)
@@ -22,8 +24,9 @@ func (cc User) CheckToken(userid int, token string) (success bool, err error) {
 	return
 }
 
-func (cc User) Login(username string, password string) (user models.User, success bool, err error) {
-	return cc.UserDAO.Login(models.User{Username: username, Password: password})
+func (cc User) Login(username string, password string, institution string) (user models.User, success bool, err error) {
+	inst, _ := strconv.Atoi(institution)
+	return cc.UserDAO.Login(models.User{Username: username, Password: password, Instution: inst})
 }
 
 // New basic client user

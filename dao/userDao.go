@@ -82,7 +82,7 @@ func (cc User) Login(user models.User) (result models.User, success bool, err er
 		return
 	}
 
-	err = session.GetCollection("user").Find(bson.M{"username": user.Username}).All(&users)
+	err = session.GetCollection("user").Find(bson.M{"username": user.Username, "instution": user.Instution}).All(&users)
 	if err != nil {
 		err = xerrors.Errorf("query user error %v", err)
 		return
