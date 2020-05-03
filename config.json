@@ -1,0 +1,30 @@
+{
+    "DEBUG":"true",
+    "TLS_KEY":"",
+    "TLS_CERT":"",
+
+    "MYSQL_USER": "root",
+    "MYSQL_PASSWORD": "usbw",
+    "MYSQL_HOST": "localhost",
+    "MYSQL_PORT": "3307",
+    "MYSQL_DB": "gen_api",
+
+    "MONGO_URL":"mongodb://127.0.0.1:27017",
+    "MONGO_DB":"gen-api",
+    "MONGO_POOL": "5",
+
+    "PORT":":8990",
+    "CORS":"*",
+
+    "BCRYPT_SECRET":"#1$eY)&4430",
+    "BCRYPT_COST": "10",
+
+    "JWT_SECRET":"#YAE!@&*M4rr98nd4Ump!&C0l3P4N01s%%",
+    "TOKEN_VALIDITY_MINUTES": "3600",
+
+    "RESET_HASH":"R3S3tM$g!c0",
+    
+    "SESSION_NAME":"A2%!#23dad#32$",
+    "SESSION_STORE":"_-)(AS(&H:(SD)_:)H@ˆ@@#$##$*{{{$$}}}(U$$#@D)&#Y!)P(@Mkdksdsb321k5*443@@##@$!"
+    
+}

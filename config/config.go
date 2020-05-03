@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/flosch/pongo2"
@@ -20,6 +21,8 @@ type Configs struct {
 var Config Configs
 
 func Load(args []string) configurations.Configurations {
+	var confFile map[string]string
+	confFile = configurations.LoadJsonFile("./config.json")
 
 	Config = Configs{
 		Token:   "$238#!%s@233**#sd*",
@@ -36,22 +39,26 @@ func Load(args []string) configurations.Configurations {
 		}
 	}
 
+	mongoPool, _ := strconv.Atoi(confFile["MONGO_POOL"])
+	bcryptCost, _ := strconv.Atoi(confFile["BCRYPT_COST"])
+	tokenValidity, _ := strconv.Atoi(confFile["TOKEN_VALIDITY_MINUTES"])
+
 	return configurations.Configurations{
 		Name: "GENERIC API - GO",
 
 		MysqlUrl: fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
-			"root",      // User
-			"usbw",      // password
-			"localhost", // host
-			"3307",      // port
-			"miia"),     // Database
+			confFile["MYSQL_USER"],
+			confFile["MYSQL_PASSWORD"],
+			confFile["MYSQL_HOST"],
+			confFile["MYSQL_PORT"],
+			confFile["MYSQL_DB"]),
 
-		MongoUrl:  "mongodb://127.0.0.1:27017",
-		MongoDb:   "gen-api",
-		MongoPool: 5,
+		MongoUrl:  confFile["MONGO_URL"],
+		MongoDb:   confFile["MONGO_DB"],
+		MongoPool: mongoPool,
 
-		Port: ":8990",
-		CORS: "*",
+		Port: confFile["PORT"],
+		CORS: confFile["CORS"],
 
 		Timeout: configurations.Timeout{
 			Write: 60 * time.Second,
@@ -60,12 +67,13 @@ func Load(args []string) configurations.Configurations {
 
 		MaxSizeMbUpload: 10 << 55, // min << max
 
-		BCryptSecret: "#1$eY)&4430",
+		BCryptSecret: confFile["BCRYPT_SECRET"],
+		ResetHash:    confFile["RESET_HASH"],
 
 		// Session
 		Session: configurations.SessionConfiguration{
-			Name:  "A2%!#23dad#32$",
-			Store: sessions.NewCookieStore([]byte("_-)(AS(&H:(SD)_:)H@ˆ@@#$##$*{{{$$}}}(U$$#@D)&#Y!)P(@Mkdksdsb321k5*443@@##@$!")),
+			Name:  confFile["SESSION_NAME"],
+			Store: sessions.NewCookieStore([]byte(confFile["SESSION_STORE"])),
 			Options: &sessions.Options{
 				Path:     "/",
 				MaxAge:   3600 * 2, //86400 * 7,
@@ -80,7 +88,11 @@ func Load(args []string) configurations.Configurations {
 				SSLHost:            "locahost:443",
 				SSLRedirect:        false,
 			},
-			BCryptCost: 10,
+			BCryptCost:    bcryptCost,
+			TLSCert:       "",
+			TLSKey:        "",
+			JWTSecret:     confFile["JWT_SECRET"],
+			TokenValidity: tokenValidity,
 		},
 
 		Templates: make(map[string]*pongo2.Template),
