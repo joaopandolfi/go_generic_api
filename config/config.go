@@ -26,9 +26,9 @@ func Load(args []string) configurations.Configurations {
 
 	Config = Configs{
 		Token:   "$238#!%s@233**#sd*",
-		Debug:   true,
-		TLSCert: "",
-		TLSKey:  "",
+		Debug:   confFile["DEBUG"] == "true",
+		TLSCert: confFile["TLS_CERT"],
+		TLSKey:  confFile["TLS_KEY"],
 	}
 
 	if len(args) == 3 {
