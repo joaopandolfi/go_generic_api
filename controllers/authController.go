@@ -55,9 +55,12 @@ func (cc AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		handlers.ResponseError(w, "Error on unmarshal body")
 		return
 	}
-	if received["username"] != "" && received["password"] != "" && received["institution"] != "" {
 
-		user, success, err := userService.Login(received["username"], received["password"], received["institution"])
+	institution := received["institution"] + received["company"]
+
+	if received["username"] != "" && received["password"] != "" && institution != "" {
+
+		user, success, err := userService.Login(received["username"], received["password"], institution)
 		//( == "joao" &&  == "202cb962ac59075b964b07152d234b70")
 		if success && err == nil {
 
