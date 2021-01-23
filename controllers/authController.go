@@ -6,7 +6,7 @@ import (
 
 	"github.com/segmentio/encoding/json"
 
-	"../models"
+	"github.com/joaopandolfi/go_generic_api/models"
 
 	"github.com/flosch/pongo2"
 	"github.com/joaopandolfi/blackwhale/configurations"
@@ -93,7 +93,7 @@ func (cc AuthController) Login(w http.ResponseWriter, r *http.Request) {
 			result["id"] = user.ID
 			result["permission"] = user.Level
 
-			handlers.Response(w, result)
+			handlers.Response(w, result, http.StatusOK)
 			return
 		}
 		msg = "Invalid credentials"
@@ -118,7 +118,7 @@ func (cc AuthController) Logout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	utils.Debug("[PostLogin]-Authenticated", sess.Values["username"], err, sess.Values["logged"])
-	handlers.Response(w, map[string]bool{"success": true})
+	handlers.Response(w, map[string]bool{"success": true}, http.StatusOK)
 }
 
 // CheckAuth - acess dabatase and validate token
@@ -127,11 +127,11 @@ func (cc AuthController) Logout(w http.ResponseWriter, r *http.Request) {
 func (cc AuthController) CheckAuth(w http.ResponseWriter, r *http.Request) {
 	var sess, _ = handlers.GetSession(r)
 	if sess == nil || sess.Values == nil || sess.Values["logged"] == nil {
-		handlers.Response(w, map[string]bool{"logged": false})
+		handlers.Response(w, map[string]bool{"logged": false}, http.StatusOK)
 		return
 	}
 
 	// CHECAR USANDO TOKEN -> CRIADO NA TABELA
 
-	handlers.Response(w, map[string]bool{"logged": sess.Values["logged"].(bool)})
+	handlers.Response(w, map[string]bool{"logged": sess.Values["logged"].(bool)}, http.StatusOK)
 }

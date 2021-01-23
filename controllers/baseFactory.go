@@ -1,8 +1,8 @@
 package controllers
 
 import (
-"../dao"
-"../services"
+	"github.com/joaopandolfi/go_generic_api/dao"
+	"github.com/joaopandolfi/go_generic_api/services"
 )
 
 // NewUserService - Factory

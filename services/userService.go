@@ -3,9 +3,9 @@ package services
 import (
 	"strconv"
 
-	"../dao"
-	"../models"
 	"github.com/joaopandolfi/blackwhale/utils"
+	"github.com/joaopandolfi/go_generic_api/dao"
+	"github.com/joaopandolfi/go_generic_api/models"
 )
 
 type UserService interface {

@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"../dao"
-	"../models"
-	"../services"
 	"github.com/joaopandolfi/blackwhale/configurations"
 	"github.com/joaopandolfi/blackwhale/handlers"
 	"github.com/joaopandolfi/blackwhale/utils"
+	"github.com/joaopandolfi/go_generic_api/dao"
+	"github.com/joaopandolfi/go_generic_api/models"
+	"github.com/joaopandolfi/go_generic_api/services"
 )
 
 var uservice = services.User{

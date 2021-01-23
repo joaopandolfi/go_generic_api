@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"../controllers"
-	"../mhandlers"
 	"github.com/gorilla/mux"
+	"github.com/joaopandolfi/go_generic_api/controllers"
+	"github.com/joaopandolfi/go_generic_api/mhandlers"
 )
 
 func rest(r *mux.Router) {

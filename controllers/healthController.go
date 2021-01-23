@@ -3,11 +3,11 @@ package controllers
 import (
 	"net/http"
 
-	"../models"
 	"github.com/joaopandolfi/blackwhale/configurations"
 	"github.com/joaopandolfi/blackwhale/handlers"
 	"github.com/joaopandolfi/blackwhale/remotes/mongo"
 	"github.com/joaopandolfi/blackwhale/utils"
+	"github.com/joaopandolfi/go_generic_api/models"
 )
 
 // --- Health ---
@@ -18,7 +18,7 @@ type HealthController struct{}
 // Health route
 func (cc HealthController) Health(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	handlers.Response(w, true)
+	handlers.Response(w, true, http.StatusOK)
 }
 
 // Config database
@@ -27,11 +27,11 @@ func (cc HealthController) Config(w http.ResponseWriter, r *http.Request) {
 	hash := handlers.GetHeader(r, "hash")
 	utils.Debug("HEADER", hash, configurations.Configuration.ResetHash)
 	if hash != configurations.Configuration.ResetHash {
-		handlers.Response(w, "Not cookies for you")
+		handlers.Response(w, "Not cookies for you", http.StatusForbidden)
 		return
 	}
 	config()
-	handlers.Response(w, true)
+	handlers.Response(w, true, http.StatusOK)
 }
 
 // ResetDatabase route
@@ -40,7 +40,7 @@ func (cc HealthController) ResetDatabase(w http.ResponseWriter, r *http.Request)
 
 	hash := handlers.GetHeader(r, "hash")
 	if hash != configurations.Configuration.ResetHash {
-		handlers.Response(w, "Invalid Hash")
+		handlers.Response(w, "Invalid Hash", http.StatusForbidden)
 		return
 	}
 
@@ -54,10 +54,10 @@ func (cc HealthController) ResetDatabase(w http.ResponseWriter, r *http.Request)
 	//config()
 
 	if len(errors) > 0 {
-		handlers.Response(w, errors)
+		handlers.Response(w, errors, http.StatusInternalServerError)
 	} else {
 		utils.Info("[ResetService] - Traffic-files database RESETED")
-		handlers.Response(w, "Reseted")
+		handlers.Response(w, "Reseted", http.StatusOK)
 	}
 
 }
